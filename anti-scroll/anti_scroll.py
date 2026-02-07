@@ -113,19 +113,19 @@ def main():
                         elapsed_time = time.time() - distraction_start_time
                         if elapsed_time > TIME_THRESHOLD:
                             if not is_alerting:
-                                print("\n!!! OSTRZEŻENIE: SKUP SIĘ NA EKRANIE! PRZESTAŃ SCROLLOWAĆ! !!!")
+                                print("\n!!! WARNING: FOCUS ON THE SCREEN! STOP SCROLLING! !!!")
                                 is_alerting = True
                                 # Prepare alerting window
-                                cv2.namedWindow("ALERT: WRACAJ DO PRACY!", cv2.WINDOW_AUTOSIZE)
-                                cv2.setWindowProperty("ALERT: WRACAJ DO PRACY!", cv2.WND_PROP_TOPMOST, 1)
+                                cv2.namedWindow("ALERT: GET BACK TO WORK!", cv2.WINDOW_AUTOSIZE)
+                                cv2.setWindowProperty("ALERT: GET BACK TO WORK!", cv2.WND_PROP_TOPMOST, 1)
                                 window_open = True
                 else:
                     distraction_start_time = None
                     if is_alerting:
-                        print("Wróciłeś do pracy. Tak trzymaj.")
+                        print("You are back to work. Keep it up.")
                         is_alerting = False
                         if window_open:
-                            cv2.destroyWindow("ALERT: WRACAJ DO PRACY!")
+                            cv2.destroyWindow("ALERT: GET BACK TO WORK!")
                             window_open = False
                             # Reset video to beginning for next time
                             skeleton_cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
@@ -139,7 +139,7 @@ def main():
                         ret_vid, frame_vid = skeleton_cap.read()
                     
                     if ret_vid:
-                        cv2.imshow("ALERT: WRACAJ DO PRACY!", frame_vid)
+                        cv2.imshow("ALERT: GET BACK TO WORK!", frame_vid)
                 
                 # Visual Feedback (optional, can be disabled for headless)
                 status_color = (0, 0, 255) if is_alerting else (0, 255, 0)

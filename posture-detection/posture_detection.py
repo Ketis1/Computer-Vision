@@ -103,10 +103,10 @@ def main():
 
         # Visual Feedback
         if calibrated_neck_dist is None:
-            status_text = "USIADZ PROSTO I NACISNIJ 'C'"
+            status_text = "SIT STRAIGHT AND PRESS 'C'"
             status_color = (0, 255, 255) # Yellowish
         else:
-            status_text = "WYPROSTUJ SIE!" if is_slouching else "POSTURA OK"
+            status_text = "STRAIGHTEN UP!" if is_slouching else "POSTURE OK"
             status_color = (0, 0, 255) if is_slouching else (0, 255, 0)
         
         cv2.putText(image, status_text, (20, 50), 
@@ -116,7 +116,7 @@ def main():
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
 
         if calibrated_neck_dist is not None:
-             cv2.putText(image, "ZKALIBROWANO", (20, 120), 
+             cv2.putText(image, "CALIBRATED", (20, 120), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
         # Show frame
@@ -128,7 +128,7 @@ def main():
         elif key == ord('c'):
             if results.pose_landmarks:
                 calibrated_neck_dist = current_neck_dist
-                print(f"Zkalibrowano! Idealny dystans: {calibrated_neck_dist:.4f}")
+                print(f"Calibrated! Ideal distance: {calibrated_neck_dist:.4f}")
 
     cap.release()
     cv2.destroyAllWindows()

@@ -54,17 +54,17 @@ def main():
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 3)
                     conf = float(box.conf[0])
-                    cv2.putText(frame, f"TELEFON {conf:.2f}", (x1, y1 - 10), 
+                    cv2.putText(frame, f"PHONE {conf:.2f}", (x1, y1 - 10), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
         
         # Alert Logic
         if phone_detected:
             if not is_alerting:
-                print("\n!!! WYKRYTO TELEFON NA STOLE! PRZESTAŃ SCROLLOWAĆ! !!!")
+                print("\n!!! PHONE DETECTED ON THE TABLE! STOP SCROLLING! !!!")
                 is_alerting = True
         else:
             if is_alerting:
-                print("Telefon zniknął. Wróć do pracy.")
+                print("Phone is gone. Get back to work.")
                 is_alerting = False
         
         # Visual Status & FPS

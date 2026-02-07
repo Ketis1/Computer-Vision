@@ -95,7 +95,7 @@ def main():
                 cv2.imshow('Reaction', serious_img)
 
         # Visual Feedback
-        status_text = "USMIECH :D" if is_smiling else "BRAK USMIECHU :|"
+        status_text = "SMILE :D" if is_smiling else "NO SMILE :|"
         status_color = (0, 255, 0) if is_smiling else (0, 0, 255)
         
         cv2.putText(image, status_text, (20, 50), 
