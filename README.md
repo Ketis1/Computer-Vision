@@ -17,17 +17,25 @@ While the primary focus of these tools is productivity and effective learning (h
 *   **[Anti-Scroll System](./anti-scroll)**
     *   **Description**: Combats the "doom-scrolling" habit. It detects when your head is tilted down (looking at a phone) and triggers a visual alert window to bring your focus back to the screen.
     *   **Key Tech**: MediaPipe Face Mesh (Head Pose Estimation).
+    *   **Documentation**: [See README](./anti-scroll/README.md)
 *   **[Phone Detection](./phone-detection)**
     *   **Description**: A real-time object detection script that looks for smartphones in the camera frame. Perfect for keeping your desk a "phone-free zone" while working.
     *   **Key Tech**: YOLOv8 (Ultralytics).
+    *   **Documentation**: [See README](./phone-detection/README.md)
+*   **[Gesture Cursor Control](./gesture-cursor-control)**
+    *   **Description**: Control your mouse cursor using hand gestures. Move your palm to move the cursor, fist to click, and 4 fingers to drag.
+    *   **Key Tech**: MediaPipe Hands, PyAutoGUI, OpenCV.
+    *   **Documentation**: [See README](./gesture-cursor-control/README.md)
 *   **[Posture Detection](./posture-detection)**
     *   **Description**: Monitors your sitting posture. After a quick calibration, it alerts you if you start slouching by measuring the vertical distance between your ears and shoulders.
     *   **Key Tech**: MediaPipe Pose.
+    *   **Documentation**: [See README](./posture-detection/README.md)
 
 ### Entertainment & Experiments
 *   **[Smile Detection](./smile-detection)**
     *   **Description**: A fun project that monitors your facial expression. It displays different reaction images based on whether you are smiling or staying serious.
     *   **Key Tech**: MediaPipe Face Mesh (Mouth/Eye Ratio).
+    *   **Documentation**: [See README](./smile-detection/README.md)
 
 ---
 
