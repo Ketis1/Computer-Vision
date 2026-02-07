@@ -2,6 +2,10 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import time
+import os
+
+# Get path to assets in the same directory as this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Initialize MediaPipe Face Mesh
 mp_face_mesh = mp.solutions.face_mesh
@@ -67,7 +71,7 @@ def main():
     cap = cv2.VideoCapture(0)
     
     # Path to the skeleton video
-    video_path = 'skeleton-banging-shield.mp4'
+    video_path = os.path.join(SCRIPT_DIR, 'skeleton-banging-shield.mp4')
     skeleton_cap = cv2.VideoCapture(video_path)
     
     # Thresholds

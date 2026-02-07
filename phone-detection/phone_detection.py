@@ -1,10 +1,14 @@
 import cv2
 from ultralytics import YOLO
 import time
+import os
+
+# Get path to assets in the same directory as this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main():
     # Load YOLOv8 model (nano version for speed)
-    model = YOLO('yolov8n.pt')
+    model = YOLO(os.path.join(SCRIPT_DIR, 'yolov8n.pt'))
     
     # Initialize camera
     cap = cv2.VideoCapture(0)

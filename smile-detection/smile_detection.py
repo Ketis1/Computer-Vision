@@ -2,6 +2,10 @@ import cv2
 import mediapipe as mp
 import time
 import math
+import os
+
+# Get path to assets in the same directory as this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main():
     # Initialize MediaPipe Face Mesh
@@ -19,8 +23,8 @@ def main():
     prev_time = 0
     
     # Load reaction images
-    happy_img = cv2.imread('happy.jpg')
-    serious_img = cv2.imread('seriouscat.jpg')
+    happy_img = cv2.imread(os.path.join(SCRIPT_DIR, 'happy.jpg'))
+    serious_img = cv2.imread(os.path.join(SCRIPT_DIR, 'seriouscat.jpg'))
     
     # Resize images to a consistent size (e.g., 400x400)
     if happy_img is not None:
