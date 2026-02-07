@@ -36,7 +36,15 @@ Run the following command to install the required packages:
 pip install opencv-python mediapipe requests
 ```
 
-### 3. Anki Configuration (AnkiConnect)
+### 3. macOS Compatibility (Beta)
+While the code is designed to be cross-platform, please note that **it has not been fully tested on macOS yet**. It should work on both Intel and Apple Silicon (M1/M2/M3) Macs, but minor adjustments might be required.
+
+**Important Note for macOS Users:**
+- **Camera Permissions:** You must grant your terminal or IDE permission to access the camera in `System Settings -> Privacy & Security -> Camera`.
+- **Python Version:** Use `python3` instead of `python` in your commands.
+- **Library names:** On some Mac configurations, you might need to install `opencv-contrib-python` instead of `opencv-python`.
+
+### 4. Anki Configuration (AnkiConnect)
 The script communicates with Anki via the **AnkiConnect** add-on.
 1. Open Anki Desktop.
 2. Go to `Tools` -> `Add-ons` -> `Get Add-ons...`.
