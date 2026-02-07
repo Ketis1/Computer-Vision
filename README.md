@@ -30,6 +30,10 @@ While the primary focus of these tools is productivity and effective learning (h
     *   **Description**: Monitors your sitting posture. After a quick calibration, it alerts you if you start slouching by measuring the vertical distance between your ears and shoulders.
     *   **Key Tech**: MediaPipe Pose.
     *   **Documentation**: [See README](./posture-detection/README.md)
+*   **[Head-Tilt Scrolling](./head-tilt-scrolling)**
+    *   **Description**: Hands-free document scrolling. Look up to scroll up, look down to scroll down. Perfect for reading documentation while multitasking.
+    *   **Key Tech**: MediaPipe Face Mesh, PyAutoGUI.
+    *   **Documentation**: [See README](./head-tilt-scrolling/README.md)
 
 ### Entertainment & Experiments
 *   **[Smile Detection](./smile-detection)**
