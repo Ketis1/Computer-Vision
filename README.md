@@ -34,6 +34,10 @@ While the primary focus of these tools is productivity and effective learning (h
     *   **Description**: Hands-free document scrolling. Look up to scroll up, look down to scroll down. Perfect for reading documentation while multitasking.
     *   **Key Tech**: MediaPipe Face Mesh, PyAutoGUI.
     *   **Documentation**: [See README](./head-tilt-scrolling/README.md)
+*   **[YT Smart Remote](./yt-smart-remote)**
+    *   **Description**: Touchless YouTube control. Play/Pause with a gesture sequence, skip with thumbs, and control volume by pointing.
+    *   **Key Tech**: MediaPipe Hands, PyAutoGUI.
+    *   **Documentation**: [See README](./yt-smart-remote/README.md)
 
 ### Entertainment & Experiments
 *   **[Smile Detection](./smile-detection)**
