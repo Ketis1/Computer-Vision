@@ -10,3 +10,4 @@ ENV/
 .idea/
 *.log
 *.pt
+__tmp/

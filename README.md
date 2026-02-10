@@ -34,6 +34,14 @@ While the primary focus of these tools is productivity and effective learning (h
     *   **Description**: Hands-free document scrolling. Look up to scroll up, look down to scroll down. Perfect for reading documentation while multitasking.
     *   **Key Tech**: MediaPipe Face Mesh, PyAutoGUI.
     *   **Documentation**: [See README](./head-tilt-scrolling/README.md)
+*   **[Eye Gaze Tracker](./eye-gaze-tracker)**
+    *   **Description**: Accuracy-focused gaze tracking system. Maps your eye movement directly to screen coordinates for hands-free cursor control.
+    *   **Key Tech**: MediaPipe Iris Landmarks, Polynomial Regression, PyAutoGUI.
+    *   **Documentation**: [See README](./eye-gaze-tracker/README.md)
+*   **[Head Tilt Cursor Control](./head-tilt-cursor-control)**
+    *   **Description**: Virtual trackpoint controlled by head tilts. Includes proportional speed control and blink-to-click functionality.
+    *   **Key Tech**: MediaPipe Face Mesh (3D Pose), OpenCV (solvePnP), PyAutoGUI.
+    *   **Documentation**: [See README](./head-tilt-cursor-control/README.md)
 *   **[YT Smart Remote](./yt-smart-remote)**
     *   **Description**: Touchless YouTube control. Play/Pause with a gesture sequence, skip with thumbs, and control volume by pointing.
     *   **Key Tech**: MediaPipe Hands, PyAutoGUI.
