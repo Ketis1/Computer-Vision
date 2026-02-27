@@ -5,3 +5,13 @@ numpy<2.0.0
 requests
 pyautogui
 keyboard
+
+# product-ingredient-reader
+torch
+torchvision
+transformers
+einops
+Flask
+Pillow
+werkzeug
+timm
