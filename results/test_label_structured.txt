@@ -5,4 +5,4 @@ Ingredients: Water, Sugar, Carbon DioxideNutrition Facts: 100 kcal
 Water, Sugar, Carbon Dioxide
 
 --- NUTRITION ---
-List the nutrition facts<poly></poly>
+100 kcal

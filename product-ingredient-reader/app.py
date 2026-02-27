@@ -58,9 +58,9 @@ def run_florence2(image, task_prompt="<OCR>", text_input=None):
     
     result = parsed_answer[task_prompt]
     
-    # Cleanup: Remove pesky <loc_> tags and prompt echoing if it happens
+    # Cleanup: Remove pesky <loc_> and <poly> tags and prompt echoing if it happens
     if isinstance(result, str):
-        result = re.sub(r'<loc_\d+>', '', result)
+        result = re.sub(r'<(loc_\d+|poly|/poly)>', '', result)
         result = result.replace(prompt, '').strip()
         # Remove Florence task prefixes if they leak
         result = re.sub(r'^(VQA|OCR)>?\s*', '', result, flags=re.IGNORECASE)
@@ -79,19 +79,17 @@ def fallback_parse(text):
     # Keywords: Ingredients, Składniki, Inhaltsstoffe, Zutaten, etc.
     ing_pattern = r'(INGREDIENTS?|SKŁADNIKI|ZUTATEN|INHALTSSTOFFE|KOMPOZYCJA)[:\s]+'
     ing_matches = re.split(ing_pattern, clean_text, flags=re.IGNORECASE)
-    if len(ing_matches) >= 3: # re.split with capture group keeps the delimiter
-        # ing_matches[1] is the keyword, [2] is the content
+    if len(ing_matches) >= 3:
         content = ing_matches[2]
-        # Stop at next section
         stop_keywords = r'NUTRITION|FACTS|WARTOŚĆ|ODŻYWCZA|STORAGE|WAŻNOŚĆ|BEST BEFORE|PRODUCED|NET|ALERGEN'
         ingredients = re.split(stop_keywords, content, flags=re.IGNORECASE)[0].strip()
 
     # 3. Match Nutrition
-    # Keywords: Nutrition Information, Nutrition Facts, Wartość odżywcza, etc.
-    nut_pattern = r'(NUTRITION|FACTS|WARTOŚĆ\s+ODŻYWCZA|NÄHRWERTE|VALORES\s+NUTRICIONALES)[:\s]+'
+    # Keywords: Nutrition Information, Nutrition Facts, Nutrition, Wartość odżywcza, etc.
+    nut_pattern = r'(NUTRITION(\s+INFORMATION|\s+FACTS)?|WARTOŚĆ\s+ODŻYWCZA|NÄHRWERTE|VALORES\s+NUTRICIONALES)[:\s]+'
     nut_matches = re.split(nut_pattern, clean_text, flags=re.IGNORECASE)
     if len(nut_matches) >= 3:
-        nutrition = nut_matches[2].strip()
+        nutrition = nut_matches[len(nut_matches)-1].strip()
         
     return ingredients, nutrition
 
@@ -99,12 +97,13 @@ def is_vqa_hallucination(text):
     """Heuristic to check if the VQA output is junk or hallucination."""
     if not text: return True
     # If it contains prompt fragments or common Florence junk
-    junk = ['what are', 'vqa>', 'question:', '<loc_', 'not sure', 'i don\'t know']
+    junk = ['what are', 'vqa>', 'question:', '<loc_', 'not sure', 'i don\'t know', 'list the', 'extract the']
     low_text = text.lower()
     for j in junk:
         if j in low_text: return True
-    # If it's just repeating the question
-    if 'ingredients' in low_text and len(text) < 30 and 'water' not in low_text:
+    # If it's just repeating the question or very short repetition
+    if (('ingredients' in low_text or 'nutrition' in low_text) and len(text) < 40 and 
+        'water' not in low_text and 'kcal' not in low_text and 'fat' not in low_text):
         return True
     return False
 
