@@ -55,8 +55,13 @@ body {
 }
 
 @keyframes drift {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(50px, 50px) scale(1.1); }
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(50px, 50px) scale(1.1);
+    }
 }
 
 /* Layout Container */
@@ -77,6 +82,7 @@ header h1 {
     font-weight: 700;
     background: linear-gradient(to right, #ffffff, #94a3b8);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0.5rem;
 }
@@ -107,7 +113,8 @@ header p {
     transition: all 0.3s ease;
 }
 
-.drop-zone:hover, .drop-zone.dragover {
+.drop-zone:hover,
+.drop-zone.dragover {
     border-color: var(--accent-color);
     background: rgba(59, 130, 246, 0.05);
 }
@@ -199,7 +206,9 @@ header p {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 #loading-state p {
@@ -208,8 +217,15 @@ header p {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
 }
 
 /* Result Panel */
@@ -219,8 +235,15 @@ header p {
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .result-header {
@@ -235,6 +258,18 @@ header p {
 .result-header h2 {
     font-size: 1.25rem;
     font-weight: 600;
+}
+
+.result-section {
+    margin-bottom: 2rem;
+}
+
+.result-section h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
 }
 
 .badge {

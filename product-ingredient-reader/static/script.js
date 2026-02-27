@@ -101,7 +101,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('An error occurred: ' + data.error);
                 resetBtn.click();
             } else {
-                resultText.textContent = data.text;
+                document.getElementById('result-ingredients').textContent = data.ingredients || 'Not found';
+                document.getElementById('result-nutrition').textContent = data.nutrition || 'Not found';
+                document.getElementById('result-raw').textContent = data.full_text;
+
                 saveLocation.textContent = 'Saved to: ' + data.saved_file;
                 resultPanel.classList.remove('hidden');
                 imagePreviewContainer.classList.remove('hidden');

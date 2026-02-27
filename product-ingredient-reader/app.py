@@ -34,9 +34,16 @@ model = AutoModelForCausalLM.from_pretrained(
 ).to(DEVICE)
 print("Model loaded successfully!")
 
-def run_florence2(image_path, task_prompt="<OCR>"):
-    image = Image.open(image_path).convert("RGB")
-    inputs = processor(text=task_prompt, images=image, return_tensors="pt").to(DEVICE, TORCH_DTYPE)
+import re
+
+def run_florence2(image, task_prompt="<OCR>", text_input=None):
+    if text_input:
+        # Refined Florence-2 VQA prompt format
+        prompt = task_prompt + text_input
+    else:
+        prompt = task_prompt
+        
+    inputs = processor(text=prompt, images=image, return_tensors="pt").to(DEVICE)
     
     generated_ids = model.generate(
       input_ids=inputs["input_ids"],
@@ -48,7 +55,58 @@ def run_florence2(image_path, task_prompt="<OCR>"):
     
     generated_text = processor.batch_decode(generated_ids, skip_special_tokens=False)[0]
     parsed_answer = processor.post_process_generation(generated_text, task=task_prompt, image_size=(image.width, image.height))
-    return parsed_answer[task_prompt]
+    
+    result = parsed_answer[task_prompt]
+    
+    # Cleanup: Remove pesky <loc_> tags and prompt echoing if it happens
+    if isinstance(result, str):
+        result = re.sub(r'<loc_\d+>', '', result)
+        result = result.replace(prompt, '').strip()
+        # Remove Florence task prefixes if they leak
+        result = re.sub(r'^(VQA|OCR)>?\s*', '', result, flags=re.IGNORECASE)
+        
+    return result
+
+def fallback_parse(text):
+    """Keyword-based fallback to extract sections from raw OCR text."""
+    ingredients = "Section not detected. Check 'Raw OCR' below."
+    nutrition = "Section not detected. Check 'Raw OCR' below."
+    
+    # 1. Clean the text slightly for better splitting
+    clean_text = re.sub(r'\s+', ' ', text)
+    
+    # 2. Match Ingredients
+    # Keywords: Ingredients, Składniki, Inhaltsstoffe, Zutaten, etc.
+    ing_pattern = r'(INGREDIENTS?|SKŁADNIKI|ZUTATEN|INHALTSSTOFFE|KOMPOZYCJA)[:\s]+'
+    ing_matches = re.split(ing_pattern, clean_text, flags=re.IGNORECASE)
+    if len(ing_matches) >= 3: # re.split with capture group keeps the delimiter
+        # ing_matches[1] is the keyword, [2] is the content
+        content = ing_matches[2]
+        # Stop at next section
+        stop_keywords = r'NUTRITION|FACTS|WARTOŚĆ|ODŻYWCZA|STORAGE|WAŻNOŚĆ|BEST BEFORE|PRODUCED|NET|ALERGEN'
+        ingredients = re.split(stop_keywords, content, flags=re.IGNORECASE)[0].strip()
+
+    # 3. Match Nutrition
+    # Keywords: Nutrition Information, Nutrition Facts, Wartość odżywcza, etc.
+    nut_pattern = r'(NUTRITION|FACTS|WARTOŚĆ\s+ODŻYWCZA|NÄHRWERTE|VALORES\s+NUTRICIONALES)[:\s]+'
+    nut_matches = re.split(nut_pattern, clean_text, flags=re.IGNORECASE)
+    if len(nut_matches) >= 3:
+        nutrition = nut_matches[2].strip()
+        
+    return ingredients, nutrition
+
+def is_vqa_hallucination(text):
+    """Heuristic to check if the VQA output is junk or hallucination."""
+    if not text: return True
+    # If it contains prompt fragments or common Florence junk
+    junk = ['what are', 'vqa>', 'question:', '<loc_', 'not sure', 'i don\'t know']
+    low_text = text.lower()
+    for j in junk:
+        if j in low_text: return True
+    # If it's just repeating the question
+    if 'ingredients' in low_text and len(text) < 30 and 'water' not in low_text:
+        return True
+    return False
 
 @app.route('/')
 def index():
@@ -68,22 +126,52 @@ def upload_file():
         file.save(filepath)
         
         try:
-            # We use <OCR> to pull all text from the label
-            extracted_text = run_florence2(filepath, task_prompt="<OCR>")
+            image = Image.open(filepath).convert("RGB")
             
-            # Format output (Florence sometimes returns a list or string depending on task)
-            if isinstance(extracted_text, list):
-               extracted_text = " ".join(extracted_text)
+            # 1. OCR for general text (The most reliable source)
+            full_text = run_florence2(image, task_prompt="<OCR>")
+            if isinstance(full_text, list): full_text = " ".join(full_text)
             
+            # 2. Try VQA for Ingredients
+            ingredients_ai = run_florence2(image, task_prompt="<DocVQA>", text_input="What are the ingredients?")
+            
+            # 3. Try VQA for Nutrition
+            nutrition_ai = run_florence2(image, task_prompt="<DocVQA>", text_input="List the nutrition facts.")
+            
+            # 4. Smart Merge / Fallback
+            fb_ingredients, fb_nutrition = fallback_parse(full_text)
+            
+            # Decide what to show for ingredients
+            if is_vqa_hallucination(ingredients_ai):
+                ingredients = fb_ingredients
+            else:
+                ingredients = ingredients_ai
+
+            # Decide what to show for nutrition
+            if is_vqa_hallucination(nutrition_ai):
+                nutrition = fb_nutrition
+            else:
+                nutrition = nutrition_ai
+
+            # Final check: if both failed to find something specific, we at least show the fallback
+            if ingredients == "Section not detected. Check 'Raw OCR' below." and fb_ingredients != "Section not detected. Check 'Raw OCR' below.":
+                ingredients = fb_ingredients
+            if nutrition == "Section not detected. Check 'Raw OCR' below." and fb_nutrition != "Section not detected. Check 'Raw OCR' below.":
+                nutrition = fb_nutrition
+
             # Save the result
-            result_filename = f"{os.path.splitext(filename)[0]}_ingredients.txt"
+            result_filename = f"{os.path.splitext(filename)[0]}_structured.txt"
             result_filepath = os.path.join(RESULTS_FOLDER, result_filename)
             with open(result_filepath, 'w', encoding='utf-8') as f:
-                f.write(extracted_text)
+                f.write(f"--- FULL OCR ---\n{full_text}\n\n")
+                f.write(f"--- INGREDIENTS ---\n{ingredients}\n\n")
+                f.write(f"--- NUTRITION ---\n{nutrition}\n")
                 
             return jsonify({
                 'success': True,
-                'text': extracted_text,
+                'full_text': full_text,
+                'ingredients': ingredients,
+                'nutrition': nutrition,
                 'saved_file': result_filepath
             })
         except Exception as e:
